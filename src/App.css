@@ -2,7 +2,21 @@
 .App {
   text-align: center;
 }
+h1 {
+  color: #385337;
+}
 
+label {
+  font-weight: bold;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  font-size: 30px;
+}
+
+option, input, .select {
+  text-align: center;
+  font-size: 0px;
+  border: none;
+}
 .worksheet {
   margin-top: 20px;
 }
@@ -12,47 +26,74 @@
   align-items: center;
   justify-content: space-around;
   margin-bottom: 10px;
+  margin-right:20px;
+  margin-top: -60px;
 }
 
 .operator {
   font-size: 1.5em;
-  margin-top: 30px;
-  margin-left: 20px;
-  
+  margin-top: 200px;
+  margin-left: 200px;
+
 }
+
 
 .generator-options {
   padding-top: 50px;
+  margin-left: 300px;
+  color: #385337;
 }
 
 .operand {
-  font-size: 1.2em;
-  margin: 0 5px;
+  font-size: 2.2em;
   text-align: right; /* Align operand2 to the left */
-  margin-right: 20px;
-  padding-top: 20px;
+  margin-right: 200px;
+  padding-bottom: 0px;
 }
 
+
 .answer {
-  margin-top: -20px;
-  padding-bottom: 30px;
+  margin-top: -50px;
+  padding-bottom: 50px;
+  margin-left: 0px;
 }
 
 .problem {
   border: 2px solid #000;
   margin: 10px;
   padding: 10px;
+  margin-top: 50px;
   box-sizing: border-box;
   text-align: center;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
   margin-bottom: 50px; /* Add your preferred margin value */
+  font-size: 1.5em;
 
 }
 
+.refresh {
+  text-align: center;
+  margin: auto;
+  display: block;
+
+}
+.problem-number {
+  margin-right: 150px;
+  margin-bottom: 150px;
+}
+
+
 /* Media query for better print styling */
 @media print {
+    .container,
+    .row,
+    .col-md-12,
+    .footer {
+      width: 100%;
+      height: 100%;
+    }
   .refresh-button {
     display: none;
   }
@@ -61,6 +102,9 @@
   }
 
   .problem {
+    page-break-inside: avoid;
+  }
+  .footer {
     page-break-inside: avoid;
   }
 }

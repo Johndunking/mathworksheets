@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
 import './App.css';
+import placevalue from './assets/placevalue.png'
+import regroup from './assets/regrouping.png'
+import logo from './assets/logo.png'
 
 function App() {
   const [problems, setProblems] = useState([]);
@@ -15,6 +18,7 @@ function App() {
     const operation = selectedOperation;
     const totalProblems = numProblems;
     let problemsGenerated = 0;
+    let counter = 1;
 
     while (problemsGenerated < totalProblems) {
       const row = [];
@@ -26,10 +30,12 @@ function App() {
           operand1: num1,
           operand2: num2,
           operator: operation,
+          problemNumber: counter,
         };
 
         row.push(problem);
         problemsGenerated++;
+        counter++;
       }
       newProblems.push(row);
     }
@@ -45,8 +51,29 @@ function App() {
   };
 
   const handleOperationChange = (event) => {
-    setSelectedOperation(event.target.value);
+    const newOperation = event.target.value;
+    setSelectedOperation(newOperation);
+  
+    // Set the document title based on the selected operation
+    document.title = `Math Worksheet - ${getOperationName(newOperation)}`;
   };
+  
+  // Helper function to get the operation name
+  const getOperationName = (operation) => {
+    switch (operation) {
+      case '+':
+        return 'Addition';
+      case '-':
+        return 'Subtraction';
+      case 'x':
+        return 'Multiplication';
+      case '÷':
+        return 'Division';
+      default:
+        return 'Math Worksheet';
+    }
+  };
+  
 
   const handleNumProblemsChange = (event) => {
     setNumProblems(parseInt(event.target.value, 10) || 0);
@@ -64,17 +91,34 @@ function App() {
     window.location.reload();
   };
 
+  const getBackgroundImage = () => {
+    switch (selectedOperation) {
+      case '+':
+        return 'url("https://suncatcherstudio.com/uploads/printables/math/hundreds-charts/pdf-png/hundreds-chart-printable-colored1-fefefe-44aa44.png")';
+      case '-':
+        return 'url("https://suncatcherstudio.com/uploads/printables/math/hundreds-charts/pdf-png/hundreds-chart-printable-colored1-fefefe-44aa44.png")';
+      case 'x':
+        return 'url("https://www.memozor.com/images/multiplication/printable_charts/zoom/multiplication_charts.jpg")';
+      case '÷':
+        return 'url("https://suncatcherstudio.com/uploads/printables/math/division-charts/pdf-png/printable-division-chart-filled-in-1-10-landscape-2288ee-44aaff.png")';
+      default:
+        return 'none';
+    }
+  };
+
+
+
+
   return (
     <div className="container">
       <div className="row justify-content-center mt-5">
         <div className="col-md-12">
           <div className="header">
-            <h1 className="text-center">Math Worksheet</h1>
-            {problemsGenerated && (
-              <button className="btn btn-primary" onClick={handleRefresh}>
-                Refresh
-              </button>
-            )}
+          {!problemsGenerated && (
+                <h1 className="text-center">
+                  <img src={logo} alt='logo' style={{width: '25rem', position:'absolute', marginLeft:'-500px', marginTop:'100px'}} />
+                </h1>
+              )}
           </div>
           {!problemsGenerated ? (
             <div className="generator-options">
@@ -85,6 +129,7 @@ function App() {
                   className="form-select"
                   value={selectedOperation}
                   onChange={handleOperationChange}
+                  style={{width:'15rem', marginBottom:'50px'}}
                 >
                   <option value="+">Addition</option>
                   <option value="-">Subtraction</option>
@@ -107,25 +152,27 @@ function App() {
               </div>
               <div className='text-center'>
               <label>
-                Number of Digits in Operand 1:
+                # of Digits in Operand 1:
                 <input
                   type="number"
                   className="form-control"
                   value={digitsInOperand1}
                   onChange={handleDigitsInOperand1Change}
                   min="1"
+                  max="7"
                 />
               </label>
               </div>
               <div className='text-center'>
               <label>
-                Number of Digits in Operand 2:
+                # of Digits in Operand 2:
                 <input
                   type="number"
                   className="form-control"
                   value={digitsInOperand2}
                   onChange={handleDigitsInOperand2Change}
                   min="1"
+                  max="7"
                 />
               </label>
               </div>
@@ -139,17 +186,30 @@ function App() {
               </div>
             </div>
           ) : (
+            <div className="header">
+              <h1 className="text-center">{getOperationName(selectedOperation)} Worksheet</h1>
+              <button className="btn btn-primary refresh" onClick={handleRefresh}>
+                Refresh
+              </button>
+            </div>
+)}
             <div className="row">
               {problems.map((row, rowIndex) => (
-                <div key={rowIndex} className="col-lg-2 col-4">
+                <div key={rowIndex} className="col-lg-3 col-6">
                   {row.map((p, colIndex) => (
                     <div
                       key={colIndex}
                       className="problem col-12 mb-4"
                     >
                       <div className="equation text-center text-md-left text-sm-left">
-                        <div className="operator">{p.operator}</div>
-                        <div className="operand">
+                      <div className="problem-number" style={{position:'absolute'}}> {p.problemNumber}.</div>
+                        <div className="operator" style={{position:'relative'}}>{p.operator}</div>
+                        <div className="operand image-container">
+                        
+                        <img src={regroup} style={{ width: '8rem', marginBottom: '-130px', marginLeft:'10px'}} alt='regroup' />
+                          <img src={placevalue} style={{ width: '8rem', marginLeft:'10px', marginBottom: '-30px' }} alt='placevalue' />
+                       
+                          <br/>
                           {p.operand1}
                           <br />
                           {p.operand2}
@@ -160,6 +220,20 @@ function App() {
                   ))}
                 </div>
               ))}
+            </div>
+          )
+          {problemsGenerated && (
+            <div
+              className="footer"
+              style={{
+                backgroundImage: getBackgroundImage(),
+                backgroundSize: 'contain',
+                backgroundRepeat: 'no-repeat',
+                height: '80vh', 
+                width: '80vw',
+                backgroundPosition:'center'
+              }}
+            >
             </div>
           )}
         </div>
