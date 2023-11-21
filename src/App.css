@@ -1,38 +1,69 @@
+/* Additional styling for the worksheet */
 .App {
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.worksheet {
+  margin-top: 20px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.equation {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  margin-bottom: 10px;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.operator {
+  font-size: 1.5em;
+  margin-top: 30px;
+  margin-left: 20px;
+  
+}
+
+.generator-options {
+  padding-top: 50px;
+}
+
+.operand {
+  font-size: 1.2em;
+  margin: 0 5px;
+  text-align: right; /* Align operand2 to the left */
+  margin-right: 20px;
+  padding-top: 20px;
+}
+
+.answer {
+  margin-top: -20px;
+  padding-bottom: 30px;
+}
+
+.problem {
+  border: 2px solid #000;
+  margin: 10px;
+  padding: 10px;
+  box-sizing: border-box;
+  text-align: center;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  justify-content: space-around;
+  margin-bottom: 50px; /* Add your preferred margin value */
+
 }
 
-.App-link {
-  color: #61dafb;
+/* Media query for better print styling */
+@media print {
+  .refresh-button {
+    display: none;
+  }
+  .header {
+    display: none;
+  }
+
+  .problem {
+    page-break-inside: avoid;
+  }
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
+
+
