@@ -111,80 +111,85 @@ function App() {
 
   return (
     <div className="container">
-      <div className="row justify-content-center mt-5">
-        <div className="col-md-12">
-          <div className="header">
-          {!problemsGenerated && (
-                <h1 className="text-center">
-                  <img src={logo} alt='logo' style={{width: '25rem', position:'absolute', marginLeft:'-500px', marginTop:'100px'}} />
-                </h1>
-              )}
-          </div>
-          {!problemsGenerated ? (
-            <div className="generator-options">
-              <div className='text-center'>
-              <label>
-                Select Operation: 
-                <select
-                  className="form-select"
-                  value={selectedOperation}
-                  onChange={handleOperationChange}
-                  style={{width:'15rem', marginBottom:'50px'}}
-                >
-                  <option value="+">Addition</option>
-                  <option value="-">Subtraction</option>
-                  <option value="x">Multiplication</option>
-                  <option value="÷">Division</option>
-                </select>
-              </label>
-              </div>
-              <div className='text-center'>
-              <label>
-                Number of Problems:
-                <input
-                  type="number"
-                  className="form-control"
-                  value={numProblems}
-                  onChange={handleNumProblemsChange}
-                  min="1"
-                />
-              </label>
-              </div>
-              <div className='text-center'>
-              <label>
-                # of Digits in Operand 1:
-                <input
-                  type="number"
-                  className="form-control"
-                  value={digitsInOperand1}
-                  onChange={handleDigitsInOperand1Change}
-                  min="1"
-                  max="7"
-                />
-              </label>
-              </div>
-              <div className='text-center'>
-              <label>
-                # of Digits in Operand 2:
-                <input
-                  type="number"
-                  className="form-control"
-                  value={digitsInOperand2}
-                  onChange={handleDigitsInOperand2Change}
-                  min="1"
-                  max="7"
-                />
-              </label>
-              </div>
-              <div className='text-center'>
-              <button
-                className="btn btn-success mt-3"
-                onClick={generateProblems}
+  <div className="row justify-content-center mt-5">
+    <div className="col-md-12">
+      <div className="header">
+        {!problemsGenerated && (
+          <h1 className="text-center logo">
+            <img src={logo} alt='logo'  className='img-fluid w-50' />
+          </h1>
+        )}
+      </div>
+
+      {!problemsGenerated ? (
+        <div className="generator-options row">
+          <div className="col-md-6 text-center">
+            <label className='custom-label'>
+              Select Operation:
+              <select
+                className="form-select custom-label"
+                value={selectedOperation}
+                onChange={handleOperationChange}
+               
               >
-                Generate New Worksheet
-              </button>
-              </div>
-            </div>
+                <option value="+">Addition</option>
+                <option value="-">Subtraction</option>
+                <option value="x">Multiplication</option>
+                <option value="÷">Division</option>
+              </select>
+            </label>
+          </div>
+
+          <div className="col-md-6 text-center">
+            <label className='custom-label'>
+              Number of Problems:
+              <input
+                type="number"
+                className="form-control"
+                value={numProblems}
+                onChange={handleNumProblemsChange}
+                min="1"
+              />
+            </label>
+          </div>
+
+          <div className="col-md-6 text-center">
+            <label className='custom-label'>
+              # of Digits in Operand 1:
+              <input
+                type="number"
+                className="form-control custom-label"
+                value={digitsInOperand1}
+                onChange={handleDigitsInOperand1Change}
+                min="1"
+                max="7"
+              />
+            </label>
+          </div>
+
+          <div className="col-md-6 text-center">
+            <label className='custom-label'>
+              # of Digits in Operand 2:
+              <input
+                type="number"
+                className="form-control"
+                value={digitsInOperand2}
+                onChange={handleDigitsInOperand2Change}
+                min="1"
+                max="7"
+              />
+            </label>
+          </div>
+
+          <div className="col-12 text-center mt-3">
+            <button
+              className="btn btn-success custom-label"
+              onClick={generateProblems}
+            >
+              Generate New Worksheet
+            </button>
+          </div>
+        </div>
           ) : (
             <div className="header">
               <h1 className="text-center">{getOperationName(selectedOperation)} Worksheet</h1>
@@ -195,7 +200,7 @@ function App() {
 )}
             <div className="row">
               {problems.map((row, rowIndex) => (
-                <div key={rowIndex} className="col-lg-3 col-6">
+                <div key={rowIndex} className="col-lg-3 col-8">
                   {row.map((p, colIndex) => (
                     <div
                       key={colIndex}
@@ -221,7 +226,6 @@ function App() {
                 </div>
               ))}
             </div>
-          )
           {problemsGenerated && (
             <div
               className="footer"
