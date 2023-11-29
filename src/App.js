@@ -110,7 +110,7 @@ function App() {
 
 
   return (
-    <div className="container-fluid">
+    <div className="container">
   <div className="row justify-content-center mt-5">
     <div className="col-md-12">
       <div className="header">
