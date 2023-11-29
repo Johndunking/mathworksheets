@@ -124,7 +124,7 @@ function App() {
       {!problemsGenerated ? (
         <div className="generator-options row">
           <div className="col-md-6 text-center">
-            <label className='custom-label img-fluid'>
+            <label className='custom-label'>
               Select Operation:
               <select
                 className="form-select form-select-lg mb-3 custom-label"
