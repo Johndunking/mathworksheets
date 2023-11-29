@@ -127,7 +127,7 @@ function App() {
             <label className='custom-label img-fluid'>
               Select Operation:
               <select
-                className="form-select custom-label"
+                className="form-select form-select-lg mb-3 custom-label"
                 value={selectedOperation}
                 onChange={handleOperationChange}
                

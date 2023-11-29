@@ -88,10 +88,6 @@ option, input, .select {
   margin-bottom: 150px;
 }
 
-.form-select, .custom-label {
-  z-index: 1000; /* Set a higher z-index if needed */
-}
-
 /* Add more media queries for larger screens if necessary */
 
 
