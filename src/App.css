@@ -11,6 +11,12 @@ label {
   font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
   font-size: 30px;
 }
+select.form-control {
+  -webkit-appearance: menulist;
+  appearance: menulist; /* Standard property */
+}
+
+
 
 option, input, .select {
   text-align: center;
