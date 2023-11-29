@@ -123,7 +123,7 @@ function App() {
 
       {!problemsGenerated ? (
         <div className="generator-options row">
-          <div className="col-md-6 text-center">
+          <div className="col-md-6">
             <label className='custom-label'>
               Select Operation:
               <select
