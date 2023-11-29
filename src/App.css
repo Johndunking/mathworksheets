@@ -44,7 +44,7 @@ option, input, .select {
 }
 
 .logo{
-  width: 50%;
+  width: 20%;
   margin: auto;
 }
 
@@ -87,30 +87,9 @@ option, input, .select {
   margin-right: 150px;
   margin-bottom: 150px;
 }
-@media (max-width: 576px) {
-  /* Small devices (576px and below) */
-  .custom-label {
-    font-size: 20px; /* Adjust the font size as needed */
-  }
 
-.logo{
-  width: 100%;
-  margin: auto;
-}
-
-}
-
-@media (min-width: 577px) and (max-width: 768px) {
-  /* Medium devices (577px to 768px) */
-  .custom-label {
-    font-size: 16px; /* Adjust the font size as needed */
-  }
-
-.logo{
-  width: 100%;
-  margin: auto;
-}
-
+.form-select {
+  z-index: 1; /* Set a higher z-index if needed */
 }
 
 /* Add more media queries for larger screens if necessary */

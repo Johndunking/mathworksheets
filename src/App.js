@@ -8,9 +8,9 @@ import logo from './assets/logo.png'
 function App() {
   const [problems, setProblems] = useState([]);
   const [selectedOperation, setSelectedOperation] = useState('+');
-  const [numProblems, setNumProblems] = useState(10);
-  const [digitsInOperand1, setDigitsInOperand1] = useState(1);
-  const [digitsInOperand2, setDigitsInOperand2] = useState(1);
+  const [numProblems, setNumProblems] = useState("");
+  const [digitsInOperand1, setDigitsInOperand1] = useState("");
+  const [digitsInOperand2, setDigitsInOperand2] = useState("");
   const [problemsGenerated, setProblemsGenerated] = useState(false);
 
   const generateProblems = () => {
@@ -76,15 +76,15 @@ function App() {
   
 
   const handleNumProblemsChange = (event) => {
-    setNumProblems(parseInt(event.target.value, 10) || 0);
+    setNumProblems(parseInt(event.target.value, 10) || '');
   };
 
   const handleDigitsInOperand1Change = (event) => {
-    setDigitsInOperand1(parseInt(event.target.value, 10) || 1);
+    setDigitsInOperand1(parseInt(event.target.value, 10) || '');
   };
 
   const handleDigitsInOperand2Change = (event) => {
-    setDigitsInOperand2(parseInt(event.target.value, 10) || 1);
+    setDigitsInOperand2(parseInt(event.target.value, 10) || '');
   };
 
   const handleRefresh = () => {
@@ -110,13 +110,13 @@ function App() {
 
 
   return (
-    <div className="container">
+    <div className="container-fluid">
   <div className="row justify-content-center mt-5">
     <div className="col-md-12">
       <div className="header">
         {!problemsGenerated && (
           <h1 className="text-center logo">
-            <img src={logo} alt='logo'  className='img-fluid w-50' />
+            <img src={logo} alt='logo'  className='img-fluid' />
           </h1>
         )}
       </div>
@@ -124,7 +124,7 @@ function App() {
       {!problemsGenerated ? (
         <div className="generator-options row">
           <div className="col-md-6 text-center">
-            <label className='custom-label'>
+            <label className='custom-label img-fluid'>
               Select Operation:
               <select
                 className="form-select custom-label"
@@ -148,7 +148,8 @@ function App() {
                 className="form-control"
                 value={numProblems}
                 onChange={handleNumProblemsChange}
-                min="1"
+                min=""
+                max="7"
               />
             </label>
           </div>
