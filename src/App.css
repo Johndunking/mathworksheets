@@ -89,7 +89,7 @@ option, input, .select {
 }
 
 .form-select, .custom-label {
-  z-index: 1; /* Set a higher z-index if needed */
+  z-index: 1000; /* Set a higher z-index if needed */
 }
 
 /* Add more media queries for larger screens if necessary */
