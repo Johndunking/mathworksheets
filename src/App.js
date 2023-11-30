@@ -123,23 +123,22 @@ function App() {
 
       {!problemsGenerated ? (
         <div className="generator-options row">
-          <div className="col-md-6 text-center">
-            <label className='custom-label'>
+         <div className="col-md-6 text-center">
+            <label className="custom-label" htmlFor="operationSelect">
               Select Operation:
-              <select
-                className="form-select form-select-lg mb-3 custom-label"
-                value={selectedOperation}
-                onChange={handleOperationChange}
-                aria-label=".form-select-lg"
-                
-               
-              >
-                <option value="+">Addition</option>
-                <option value="-">Subtraction</option>
-                <option value="x">Multiplication</option>
-                <option value="÷">Division</option>
-              </select>
             </label>
+            <select
+              className="custom-select"
+              id="operationSelect"
+              value={selectedOperation}
+              onChange={handleOperationChange}
+              aria-label="Select operation"
+            >
+              <option value="+">Addition</option>
+              <option value="-">Subtraction</option>
+              <option value="x">Multiplication</option>
+              <option value="÷">Division</option>
+            </select>
           </div>
 
           <div className="col-md-6 text-center">

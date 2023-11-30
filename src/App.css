@@ -6,6 +6,27 @@ h1 {
   color: #385337;
 }
 
+.custom-label {
+  font-size: 16px;
+}
+
+.custom-select {
+  width: 20%;
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  margin-top: 5px;
+  background-color: #fff; /* Background color for the dropdown */
+  color: #333; /* Text color */
+}
+
+/* Add styles for the selected option */
+.custom-select option {
+  background-color: #fff;
+  color: #333;
+}
 
 select.form-control {
   -webkit-appearance: menulist;
