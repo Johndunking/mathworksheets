@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
 import './App.css';
 import placevalue from './assets/placevalue.png'
+import placevaluelabel from './assets/placevaluelabels.png'
 import regroup from './assets/regrouping.png'
 import logo from './assets/logo.png'
 
@@ -195,7 +196,12 @@ function App() {
         </div>
           ) : (
             <div className="header">
-              <h1 className="text-center">{getOperationName(selectedOperation)} Worksheet</h1>
+              <h1 className="text-center" >{getOperationName(selectedOperation)} Worksheet <br />
+              <div className="image-container2">
+                <img src={placevalue} alt='placevalue' className="image img-fluid" style={{ width: '28rem', marginBottom: '-40px', marginLeft:'-80px'}}/>
+                <img src={placevaluelabel} alt='placevaluelabel' className='image-label img-fluid' style={{ width: '24rem', marginBottom: '-120px', marginLeft:'-440px'}} />
+              </div>
+              <br /> Place Value Chart</h1>
               <button className="btn btn-primary refresh" onClick={handleRefresh}>
                 Refresh
               </button>
