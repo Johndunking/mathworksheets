@@ -20,11 +20,6 @@ h1 {
   color: #333; /* Text color */
 }
 
-/* Add styles for the selected option */
-.custom-select option {
-  background-color: #fff;
-  color: #333;
-}
 
 select.form-control {
   -webkit-appearance: menulist;
@@ -120,6 +115,7 @@ option, input {
     .footer {
       width: 100%;
       height: 100%;
+      justify-content: center;
     }
   .refresh-button {
     display: none;
