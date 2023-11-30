@@ -6,11 +6,7 @@ h1 {
   color: #385337;
 }
 
-label {
-  font-weight: bold;
-  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-  font-size: 30px;
-}
+
 select.form-control {
   -webkit-appearance: menulist;
   appearance: menulist; /* Standard property */
