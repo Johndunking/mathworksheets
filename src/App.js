@@ -5,6 +5,7 @@ import placevalue from './assets/placevalue.png'
 import placevaluelabel from './assets/placevaluelabels.png'
 import regroup from './assets/regrouping.png'
 import logo from './assets/logo.png'
+import Select from 'react-select';
 
 function App() {
   const [problems, setProblems] = useState([]);
@@ -13,37 +14,98 @@ function App() {
   const [digitsInOperand1, setDigitsInOperand1] = useState("");
   const [digitsInOperand2, setDigitsInOperand2] = useState("");
   const [problemsGenerated, setProblemsGenerated] = useState(false);
+  const [regrouping, setRegrouping] = useState(true);
+
+  const handleRegroupingChange = (event) => {
+    setRegrouping(event.target.value === 'true');
+  };
 
   const generateProblems = () => {
     const newProblems = [];
     const operation = selectedOperation;
     const totalProblems = numProblems;
-    let problemsGenerated = 0;
-    let counter = 1;
-
-    while (problemsGenerated < totalProblems) {
+    const generatedProblemNumbers = new Set();
+  
+    while (newProblems.length < totalProblems) {
       const row = [];
-      for (let j = 0; j < 1 && problemsGenerated < totalProblems; j++) {
-        const num1 = getRandomNumber(digitsInOperand1);
-        const num2 = getRandomNumber(digitsInOperand2);
-
-        const problem = {
-          operand1: num1,
-          operand2: num2,
-          operator: operation,
-          problemNumber: counter,
-        };
-
-        row.push(problem);
-        problemsGenerated++;
-        counter++;
+      for (let j = 0; j < 1 && newProblems.length < totalProblems; j++) {
+        let num1, num2;
+  
+        // Generate operand1 and operand2, regenerating if subtraction results in a negative answer
+        do {
+          num1 = getRandomNumber(digitsInOperand1);
+          num2 = getRandomNumber(digitsInOperand2, true, num1);
+        } while (operation === '-' && num1 < num2);
+  
+        const problemNumber = newProblems.length + 1;
+  
+        if (!generatedProblemNumbers.has(problemNumber)) {
+          const problem = {
+            operand1: num1,
+            operand2: num2,
+            operator: operation,
+            problemNumber: problemNumber,
+            regrouping: requiresRegrouping(operation, num1, num2, regrouping),
+          };
+  
+          row.push(problem);
+          generatedProblemNumbers.add(problemNumber);
+        }
       }
       newProblems.push(row);
     }
-
+  
     setProblems(newProblems);
     setProblemsGenerated(true);
   };
+
+
+  const requiresRegrouping = (operation, num1, num2, regrouping) => {
+    switch (operation) {
+      case '+':
+        return regrouping && hasCarryOver(num1, num2);
+        case 'x':
+          return regrouping && hasCarryOver(num1, num2);
+      case '-':
+        return regrouping && requiresBorrow(num1, num2);
+      // Add cases for other operations if needed
+      default:
+        return false;
+    }
+  };
+
+  const hasCarryOver = (num1, num2, operation) => {
+    if (operation === '+') {
+      const sum = num1 + num2;
+      return sum >= 10;
+    } else if (operation === 'x') {
+      const product = num1 * num2;
+      return product >= 10;
+    }
+  
+    return false; // Default case or handle other operations if needed
+  };
+  
+  const requiresBorrow = (num1, num2) => {
+    const num1Digits = num1.toString().split('').map(Number);
+    const num2Digits = num2.toString().split('').map(Number);
+  
+    // Check each digit from right to left
+    for (let i = num1Digits.length - 1; i >= 0; i--) {
+      if (num1Digits[i] < num2Digits[i]) {
+        // Requires borrowing from the higher digit
+        return true;
+      } else if (num1Digits[i] > num2Digits[i]) {
+        // No borrowing required in this digit
+        return false;
+      }
+    }
+
+    // All digits are equal, no borrowing required
+  return false;
+};
+
+  
 
   const getRandomNumber = (digits) => {
     const min = Math.pow(10, digits - 1);
@@ -51,13 +113,11 @@ function App() {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   };
 
-  const handleOperationChange = (event) => {
-    const newOperation = event.target.value;
-    setSelectedOperation(newOperation);
-  
-    // Set the document title based on the selected operation
-    document.title = `Math Worksheet - ${getOperationName(newOperation)}`;
+  const handleOperationChange = (selectedOption) => {
+    setSelectedOperation(selectedOption.value);
+    document.title = `Math Worksheet - ${getOperationName(selectedOption.value)}`;
   };
+  
   
   // Helper function to get the operation name
   const getOperationName = (operation) => {
@@ -74,6 +134,13 @@ function App() {
         return 'Math Worksheet';
     }
   };
+
+  const operationOptions = [
+    { value: '+', label: 'Addition' },
+    { value: '-', label: 'Subtraction' },
+    { value: 'x', label: 'Multiplication' },
+    { value: '÷', label: 'Division' },
+  ];
   
 
   const handleNumProblemsChange = (event) => {
@@ -125,35 +192,29 @@ function App() {
       {!problemsGenerated ? (
         <div className="generator-options row">
           <div className="col-md-6 text-center">
-            <label className='custom-label'>
-              Select Operation:
-              <select
-                className="form-select form-select-lg mb-3 custom-label"
-                value={selectedOperation}
-                onChange={handleOperationChange}
-                aria-label=".form-select-lg"
-                
-               
-              >
-                <option value="+">Addition</option>
-                <option value="-">Subtraction</option>
-                <option value="x">Multiplication</option>
-                <option value="÷">Division</option>
-              </select>
-            </label>
+          <label className="custom-label">
+            Select Operation:
+            <Select
+              className="basic-single"
+              value={operationOptions.find((option) => option.value === selectedOperation)}
+              onChange={handleOperationChange}
+              options={operationOptions}
+            />
+          </label>
           </div>
 
           <div className="col-md-6 text-center">
             <label className='custom-label'>
-              Number of Problems:
-              <input
-                type="number"
-                className="form-control"
-                value={numProblems}
-                onChange={handleNumProblemsChange}
-                min=""
-                max="7"
-              />
+              Regrouping:
+              <select
+                className="form-select form-select-lg mb-3 custom-label"
+                value={regrouping}
+                onChange={handleRegroupingChange}
+                aria-label=".form-select-lg"
+              >
+                <option value={true}>With Regrouping</option>
+                <option value={false}>Without Regrouping</option>
+              </select>
             </label>
           </div>
 
@@ -166,6 +227,20 @@ function App() {
                 value={digitsInOperand1}
                 onChange={handleDigitsInOperand1Change}
                 min="1"
+                max="7"
+              />
+            </label>
+          </div>
+
+          <div className="col-md-6 text-center">
+            <label className='custom-label'>
+              Number of Problems:
+              <input
+                type="number"
+                className="form-control"
+                value={numProblems}
+                onChange={handleNumProblemsChange}
+                min=""
                 max="7"
               />
             </label>

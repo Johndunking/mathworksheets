@@ -67,15 +67,15 @@ option, input {
 }
 
 .problem {
-  margin: 10px;
-  padding-bottom: 40px;
-  margin-top: 30px;
+  margin: 0px;
+  padding-bottom: 0px;
+  margin-top: 60px;
   box-sizing: border-box;
   text-align: center;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
-  margin-bottom: 50px; /* Add your preferred margin value */
+  margin-bottom: 0px; /* Add your preferred margin value */
   font-size: 1.5em;
 
 }
