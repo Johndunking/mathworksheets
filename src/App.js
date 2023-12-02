@@ -16,8 +16,8 @@ function App() {
   const [problemsGenerated, setProblemsGenerated] = useState(false);
   const [regrouping, setRegrouping] = useState(true);
 
-  const handleRegroupingChange = (event) => {
-    setRegrouping(event.target.value === 'true');
+  const handleRegroupingChange = (selectedOption) => {
+    setRegrouping(selectedOption.value === 'true');
   };
 
   const generateProblems = () => {
@@ -117,7 +117,7 @@ function App() {
     setSelectedOperation(selectedOption.value);
     document.title = `Math Worksheet - ${getOperationName(selectedOption.value)}`;
   };
-  
+
   
   // Helper function to get the operation name
   const getOperationName = (operation) => {
@@ -141,7 +141,7 @@ function App() {
     { value: 'x', label: 'Multiplication' },
     { value: '÷', label: 'Division' },
   ];
-  
+
 
   const handleNumProblemsChange = (event) => {
     setNumProblems(parseInt(event.target.value, 10) || '');
@@ -206,15 +206,15 @@ function App() {
           <div className="col-md-6 text-center">
             <label className='custom-label'>
               Regrouping:
-              <select
-                className="form-select form-select-lg mb-3 custom-label"
-                value={regrouping}
-                onChange={handleRegroupingChange}
-                aria-label=".form-select-lg"
-              >
-                <option value={true}>With Regrouping</option>
-                <option value={false}>Without Regrouping</option>
-              </select>
+              <Select
+                className="basic-single"
+                value={{ value: regrouping, label: regrouping ? 'With Regrouping' : 'Without Regrouping' }}
+                onChange={(selectedOption) => handleRegroupingChange(selectedOption.value === 'With Regrouping')}
+                options={[
+                  { value: true, label: 'With Regrouping' },
+                  { value: false, label: 'Without Regrouping' },
+                ]}
+              />
             </label>
           </div>
 
@@ -231,21 +231,6 @@ function App() {
               />
             </label>
           </div>
-
-          <div className="col-md-6 text-center">
-            <label className='custom-label'>
-              Number of Problems:
-              <input
-                type="number"
-                className="form-control"
-                value={numProblems}
-                onChange={handleNumProblemsChange}
-                min=""
-                max="7"
-              />
-            </label>
-          </div>
-
           <div className="col-md-6 text-center">
             <label className='custom-label'>
               # of Digits in Operand 2:
@@ -259,7 +244,19 @@ function App() {
               />
             </label>
           </div>
-
+          <div className="col-md-6 text-center">
+            <label className='custom-label'>
+              Number of Problems:
+              <input
+                type="number"
+                className="form-control"
+                value={numProblems}
+                onChange={handleNumProblemsChange}
+                min=""
+                max="7"
+              />
+            </label>
+          </div>
           <div className="col-12 text-center mt-3">
             <button
               className="btn btn-success custom-label"
