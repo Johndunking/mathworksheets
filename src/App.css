@@ -34,12 +34,18 @@ option, input {
   margin-top: -60px;
 }
 
-.operator {
+.chrome .operator {
   font-size: 1.5em;
   margin-top: 200px;
-  margin-left: 200px;
-
+  margin-left: 70px;
 }
+
+  .operator {
+    font-size: 1.5em;
+    margin-top: 200px;
+    margin-left: 200px;
+
+  }
 
 
 .generator-options {
@@ -99,7 +105,8 @@ option, input {
     .container,
     .row,
     .col-md-12,
-    .footer {
+    .footer
+           {
       width: 100%;
       height: 100%;
       justify-content: center;
@@ -107,8 +114,6 @@ option, input {
   .btn {
     display: none;
   }
-  
-
   .problem {
     page-break-inside: avoid;
   }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
 import './App.css';
 import placevalue from './assets/placevalue.png'
@@ -15,6 +15,15 @@ function App() {
   const [digitsInOperand2, setDigitsInOperand2] = useState("");
   const [problemsGenerated, setProblemsGenerated] = useState(false);
   const [regrouping, setRegrouping] = useState(true);
+
+  useEffect(() => {
+    // Detect Google Chrome and add class to HTML element
+    const isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
+    if (isChrome) {
+      document.documentElement.className += ' chrome';
+    }
+  }, []); // Empty dependency array ensures the effect runs only once after mount
+
 
   const handleRegroupingChange = (selectedOption) => {
     setRegrouping(selectedOption.value === 'true');
