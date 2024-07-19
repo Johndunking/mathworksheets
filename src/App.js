@@ -4,8 +4,10 @@ import './App.css';
 import placevalue from './assets/placevalue.png'
 import placevaluelabel from './assets/placevaluelabels.png'
 import regroup from './assets/regrouping.png'
-import logo from './assets/logo.png'
+import logo from './assets/logo1.2.png'
 import Select from 'react-select';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 function App() {
   const [problems, setProblems] = useState([]);
@@ -22,8 +24,14 @@ function App() {
     if (isChrome) {
       document.documentElement.className += ' chrome';
     }
-  }, []); // Empty dependency array ensures the effect runs only once after mount
 
+    // Update body class based on problemsGenerated state
+    if (problemsGenerated) {
+      document.body.classList.add('problems-generated');
+    } else {
+      document.body.classList.remove('problems-generated');
+    }
+  }, [problemsGenerated]);    
 
   const handleRegroupingChange = (selectedOption) => {
     setRegrouping(selectedOption.value === 'true');
@@ -68,13 +76,12 @@ function App() {
     setProblemsGenerated(true);
   };
 
-
   const requiresRegrouping = (operation, num1, num2, regrouping) => {
     switch (operation) {
       case '+':
         return regrouping && hasCarryOver(num1, num2);
-        case 'x':
-          return regrouping && hasCarryOver(num1, num2);
+      case 'x':
+        return regrouping && hasCarryOver(num1, num2);
       case '-':
         return regrouping && requiresBorrow(num1, num2);
       // Add cases for other operations if needed
@@ -111,10 +118,8 @@ function App() {
     }
 
     // All digits are equal, no borrowing required
-  return false;
-};
-
-  
+    return false;
+  };
 
   const getRandomNumber = (digits) => {
     const min = Math.pow(10, digits - 1);
@@ -127,7 +132,6 @@ function App() {
     document.title = `Math Worksheet - ${getOperationName(selectedOption.value)}`;
   };
 
-  
   // Helper function to get the operation name
   const getOperationName = (operation) => {
     switch (operation) {
@@ -150,7 +154,6 @@ function App() {
     { value: 'x', label: 'Multiplication' },
     { value: '÷', label: 'Division' },
   ];
-
 
   const handleNumProblemsChange = (event) => {
     setNumProblems(parseInt(event.target.value, 10) || '');
@@ -183,139 +186,161 @@ function App() {
     }
   };
 
+   const generatePDF = () => {
+    if (window.confirm('Do you want to download the PDF?')) {
+      const input = document.getElementById('worksheet');
+      html2canvas(input, { scale: 2 }).then((canvas) => {
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const imgWidth = 210;
+        const pageHeight = 295;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        let heightLeft = imgHeight;
+        let position = 0;
 
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
 
+        while (heightLeft >= 0) {
+          position = heightLeft - imgHeight;
+          pdf.addPage();
+          pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+          heightLeft -= pageHeight;
+        }
+
+        pdf.save('worksheet.pdf');
+      });
+    }
+  };
 
   return (
-    <div className="container">
-  <div className="row justify-content-center mt-5">
-    <div className="col-md-12">
-      <div className="header">
-        {!problemsGenerated && (
-          <h1 className="text-center logo">
-            <img src={logo} alt='logo'  className='img-fluid' />
-          </h1>
-        )}
-      </div>
-
-      {!problemsGenerated ? (
-        <div className="generator-options row">
-          <div className="col-md-6 text-center">
-          <label className="custom-label">
-            Select Operation:
-            <Select
-              className="basic-single"
-              value={operationOptions.find((option) => option.value === selectedOperation)}
-              onChange={handleOperationChange}
-              options={operationOptions}
-            />
-          </label>
+    <div className="container background-container">
+      <div className="row justify-content-center mt-5">
+        <div className="col-md-12">
+          <div className="header">
+            {!problemsGenerated && (
+              <div className="logo-wrapper">
+                <button className="logo-button" onClick={generateProblems}>
+                  <img src={logo} alt="logo" className="background-logo" />
+                  <span className="logo-text">Create Worksheet</span>
+                </button>
+              </div>
+            )}
           </div>
 
-          <div className="col-md-6 text-center">
-            <label className='custom-label'>
-              Regrouping:
-              <Select
-                className="basic-single"
-                value={{ value: regrouping, label: regrouping ? 'With Regrouping' : 'Without Regrouping' }}
-                onChange={(selectedOption) => handleRegroupingChange(selectedOption.value === 'With Regrouping')}
-                options={[
-                  { value: true, label: 'With Regrouping' },
-                  { value: false, label: 'Without Regrouping' },
-                ]}
-              />
-            </label>
-          </div>
+          {!problemsGenerated ? (
+            <div className="generator-options row">
+              <div className="col-md-12 text-center d-flex flex-column flex-md-row justify-content-md-around align-items-center">
+                <div className="select-container">
+                  <label className="custom-label">
+                    Select Operation:
+                    <Select
+                      className="basic-single"
+                      value={operationOptions.find((option) => option.value === selectedOperation)}
+                      onChange={handleOperationChange}
+                      options={operationOptions}
+                    />
+                  </label>
+                </div>
 
-          <div className="col-md-6 text-center">
-            <label className='custom-label'>
-              # of Digits in Operand 1:
-              <input
-                type="number"
-                className="form-control custom-label"
-                value={digitsInOperand1}
-                onChange={handleDigitsInOperand1Change}
-                min="1"
-                max="7"
-              />
-            </label>
-          </div>
-          <div className="col-md-6 text-center">
-            <label className='custom-label'>
-              # of Digits in Operand 2:
-              <input
-                type="number"
-                className="form-control"
-                value={digitsInOperand2}
-                onChange={handleDigitsInOperand2Change}
-                min="1"
-                max="7"
-              />
-            </label>
-          </div>
-          <div className="col-md-6 text-center">
-            <label className='custom-label'>
-              Number of Problems:
-              <input
-                type="number"
-                className="form-control"
-                value={numProblems}
-                onChange={handleNumProblemsChange}
-                min=""
-                max="7"
-              />
-            </label>
-          </div>
-          <div className="col-12 text-center mt-3">
-            <button
-              className="btn btn-success custom-label"
-              onClick={generateProblems}
-            >
-              Generate New Worksheet
-            </button>
-          </div>
-        </div>
+                <div className="select-container">
+                  <label className="custom-label">
+                    Regrouping:
+                    <Select
+                      className="basic-single"
+                      value={{ value: regrouping, label: regrouping ? 'With Regrouping' : 'Without Regrouping' }}
+                      onChange={(selectedOption) => handleRegroupingChange(selectedOption.value === 'With Regrouping')}
+                      options={[
+                        { value: true, label: 'With Regrouping' },
+                        { value: false, label: 'Without Regrouping' },
+                      ]}
+                    />
+                  </label>
+                </div>
+
+                <div className="select-container">
+                  <label className="custom-label">
+                    # of Digits in Operand 1:
+                    <input
+                      type="number"
+                      className="form-control custom-label"
+                      value={digitsInOperand1}
+                      onChange={handleDigitsInOperand1Change}
+                      min="1"
+                      max="7"
+                    />
+                  </label>
+                </div>
+                <div className="select-container">
+                  <label className="custom-label">
+                    # of Digits in Operand 2:
+                    <input
+                      type="number"
+                      className="form-control"
+                      value={digitsInOperand2}
+                      onChange={handleDigitsInOperand2Change}
+                      min="1"
+                      max="7"
+                    />
+                  </label>
+                </div>
+                <div className="select-container">
+                  <label className="custom-label">
+                    Number of Problems:
+                    <input
+                      type="number"
+                      className="form-control"
+                      value={numProblems}
+                      onChange={handleNumProblemsChange}
+                      min=""
+                      max="7"
+                    />
+                  </label>
+                </div>
+              </div>
+            </div>
           ) : (
             <div className="header">
-              <h1 className="text-center" >{getOperationName(selectedOperation)} Worksheet <br />
-              <div className="image-container2">
-                <img src={placevalue} alt='placevalue' className="image img-fluid" style={{ width: '28rem', marginBottom: '-40px', marginLeft:'-80px'}}/>
-                <img src={placevaluelabel} alt='placevaluelabel' className='image-label img-fluid' style={{ width: '24rem', marginBottom: '-120px', marginLeft:'-440px'}} />
-              </div>
-              <br /> Place Value Chart</h1>
+              <h1 className="text-center">
+                {getOperationName(selectedOperation)} Worksheet
+                <br />
+                <div className="image-container2">
+                  <img src={placevalue} alt="placevalue" className="image img-fluid" style={{ width: '28rem', marginBottom: '-40px', marginLeft: '-80px' }} />
+                  <img src={placevaluelabel} alt="placevaluelabel" className="image-label img-fluid" style={{ width: '24rem', marginBottom: '-120px', marginLeft: '-440px' }} />
+                </div>
+                <br /> Place Value Chart
+              </h1>
               <button className="btn btn-primary refresh" onClick={handleRefresh}>
                 Refresh
               </button>
+              <button className="btn btn-success generate-pdf" onClick={generatePDF}>
+                Generate PDF
+              </button>
             </div>
-)}
-            <div className="row">
-              {problems.map((row, rowIndex) => (
-                <div key={rowIndex} className="col-lg-3 col-8">
-                  {row.map((p, colIndex) => (
-                    <div
-                      key={colIndex}
-                      className="problem col-12 mb-4"
-                    >
-                      <div className="equation text-center text-md-left text-sm-left">
-                      <div className="problem-number" style={{position:'absolute'}}> {p.problemNumber}.</div>
-                        <div className="operator" style={{position:'relative'}}>{p.operator}</div>
-                        <div className="operand image-container">
-                        
-                        <img src={regroup} style={{ width: '8rem', marginBottom: '-130px', marginLeft:'10px'}} alt='regroup' />
-                          <img src={placevalue} style={{ width: '8rem', marginLeft:'10px', marginBottom: '-30px' }} alt='placevalue' />
-                       
-                          <br/>
-                          {p.operand1}
-                          <br />
-                          {p.operand2}
-                        </div>
+          )}
+          <div className="row" id="worksheet">
+            {problems.map((row, rowIndex) => (
+              <div key={rowIndex} className="col-lg-3 col-8">
+                {row.map((p, colIndex) => (
+                  <div key={colIndex} className="problem col-12 mb-4">
+                    <div className="equation text-center text-md-left text-sm-left">
+                      <div className="problem-number" style={{ position: 'absolute' }}> {p.problemNumber}.</div>
+                      <div className="operator" style={{ position: 'relative' }}>{p.operator}</div>
+                      <div className="operand image-container">
+                        <img src={regroup} style={{ width: '8rem', marginBottom: '-130px', marginLeft: '10px' }} alt="regroup" />
+                        <img src={placevalue} style={{ width: '8rem', marginLeft: '10px', marginBottom: '-30px' }} alt="placevalue" />
+                        <br />
+                        {p.operand1}
+                        <br />
+                        {p.operand2}
                       </div>
-                      <div className="answer">____________</div>
                     </div>
-                  ))}
-                </div>
-              ))}
-            </div>
+                    <div className="answer">____________</div>
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
           {problemsGenerated && (
             <div
               className="footer"
@@ -323,9 +348,9 @@ function App() {
                 backgroundImage: getBackgroundImage(),
                 backgroundSize: 'contain',
                 backgroundRepeat: 'no-repeat',
-                height: '80vh', 
+                height: '80vh',
                 width: '80vw',
-                backgroundPosition:'center'
+                backgroundPosition: 'center'
               }}
             >
             </div>
@@ -333,7 +358,7 @@ function App() {
         </div>
       </div>
     </div>
-  );
+  );  
 }
 
 export default App;

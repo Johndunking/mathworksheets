@@ -1,12 +1,101 @@
 /* Additional styling for the worksheet */
 .App {
   text-align: center;
-}
+} 
 h1 {
   color: #385337;
 }.custom-label {
   font-size: 16px;
 }
+.background-container {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+body {
+  background-color: rgb(254, 229, 217); /* Landing page background color */ 
+}
+
+body.problems-generated {
+  background-color: white;
+}
+
+.logo-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.logo-button {
+  position: relative;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  outline: none;
+}
+
+.background-logo {
+  display: block;
+  width: 350px;
+  height: 350px;
+  border-radius: 30%;
+  object-fit: cover;
+  transition: transform 0.3s, box-shadow 0.3s;
+  opacity: 0.5;
+}
+
+.logo-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: rgb(233, 190, 168);
+  font-size: 2.8rem;
+  text-shadow: 2px 2px 2px gray, 0 0 1em lightskyblue, 0 0 0.2em black;
+  text-align: center;
+  pointer-events: none; /* Ensure text doesn't interfere with the button click */
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.logo-button:hover .background-logo:hover,
+.logo-button:hover,.logo-text:hover {
+  transform: scale(1.1);
+}
+
+
+.logo-button:hover .background-logo {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+} 
+
+@media (max-width: 768px) {
+  .background-logo {
+    width: 150px;
+    height: 150px;
+  }
+
+  .logo-text {
+    font-size: 1.2  rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .background-logo {
+    width: 250px;
+    height: 250px;
+  }
+
+  .logo-text {
+    font-size: 1.2rem;
+  }
+}
+
 
 
 select.form-control {
@@ -50,7 +139,7 @@ option, input {
 
 .generator-options {
   padding-top: 50px;
-  color: #385337;
+  color:  #534837;
 }
 
 .logo{
@@ -85,7 +174,12 @@ option, input {
   font-size: 1.5em;
 
 }
-
+.generate-pdf{
+  text-align: center;
+  margin: auto;
+  display: block;
+  margin-top: 10px;
+}
 .refresh {
   text-align: center;
   margin: auto;
@@ -110,6 +204,7 @@ option, input {
       width: 100%;
       height: 100%;
       justify-content: center;
+      flex-direction:block;
     }
   .btn {
     display: none;
