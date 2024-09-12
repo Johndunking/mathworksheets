@@ -39,87 +39,143 @@ function App() {
 
   const generateProblems = () => {
     const newProblems = [];
-    const operation = selectedOperation;
     const totalProblems = numProblems;
-    const generatedProblemNumbers = new Set();
   
     while (newProblems.length < totalProblems) {
-      const row = [];
-      for (let j = 0; j < 1 && newProblems.length < totalProblems; j++) {
-        let num1, num2;
+      let num1, num2;
+      let regroupRequired;
   
-        // Generate operand1 and operand2, regenerating if subtraction results in a negative answer
-        do {
-          num1 = getRandomNumber(digitsInOperand1);
-          num2 = getRandomNumber(digitsInOperand2, true, num1);
-        } while (operation === '-' && num1 < num2);
-  
-        const problemNumber = newProblems.length + 1;
-  
-        if (!generatedProblemNumbers.has(problemNumber)) {
-          const problem = {
-            operand1: num1,
-            operand2: num2,
-            operator: operation,
-            problemNumber: problemNumber,
-            regrouping: requiresRegrouping(operation, num1, num2, regrouping),
-          };
-  
-          row.push(problem);
-          generatedProblemNumbers.add(problemNumber);
-        }
+      // Generate problems based on selected operation
+      switch (selectedOperation) {
+        case '+':
+          ({ num1, num2, regroupRequired } = generateAdditionProblem());
+          break;
+        case '-':
+          ({ num1, num2, regroupRequired } = generateSubtractionProblem());
+          break;
+        case 'x': // For multiplication
+          ({ num1, num2, regroupRequired } = generateMultiplicationProblem());
+          break;
+        case '÷': // For division
+          ({ num1, num2, regroupRequired } = generateDivisionProblem());
+          break;
+        default:
+          break;
       }
-      newProblems.push(row);
+  
+      // If regrouping is disabled, ensure the problem doesn't require regrouping
+      if (!regrouping && regroupRequired) {
+        continue; // Skip and regenerate the problem
+      }
+  
+      const problemNumber = newProblems.length + 1;
+  
+      newProblems.push([{
+        operand1: num1,
+        operand2: num2,
+        operator: selectedOperation,
+        problemNumber: problemNumber,
+        regrouping: regrouping && regroupRequired, // Regrouping control
+      }]);
     }
   
     setProblems(newProblems);
     setProblemsGenerated(true);
   };
-
-  const requiresRegrouping = (operation, num1, num2, regrouping) => {
-    switch (operation) {
-      case '+':
-        return regrouping && hasCarryOver(num1, num2);
-      case 'x':
-        return regrouping && hasCarryOver(num1, num2);
-      case '-':
-        return regrouping && requiresBorrow(num1, num2);
-      // Add cases for other operations if needed
-      default:
-        return false;
-    }
-  };
-
-  const hasCarryOver = (num1, num2, operation) => {
-    if (operation === '+') {
-      const sum = num1 + num2;
-      return sum >= 10;
-    } else if (operation === 'x') {
-      const product = num1 * num2;
-      return product >= 10;
-    }
   
-    return false; // Default case or handle other operations if needed
+  // Function to generate an addition problem
+  const generateAdditionProblem = () => {
+    let num1 = getRandomNumber(digitsInOperand1);
+    let num2 = getRandomNumber(digitsInOperand2);
+    let regroupRequired = checkCarryOver(num1, num2);
+  
+    return { num1, num2, regroupRequired };
   };
   
-  const requiresBorrow = (num1, num2) => {
-    const num1Digits = num1.toString().split('').map(Number);
-    const num2Digits = num2.toString().split('').map(Number);
+  // Function to generate a subtraction problem
+  const generateSubtractionProblem = () => {
+    let num1 = getRandomNumber(digitsInOperand1);
+    let num2 = getRandomNumber(digitsInOperand2);
   
-    // Check each digit from right to left
-    for (let i = num1Digits.length - 1; i >= 0; i--) {
-      if (num1Digits[i] < num2Digits[i]) {
-        // Requires borrowing from the higher digit
-        return true;
-      } else if (num1Digits[i] > num2Digits[i]) {
-        // No borrowing required in this digit
-        return false;
+    // Ensure no negative results for subtraction
+    if (num2 > num1) [num1, num2] = [num2, num1];
+  
+    let regroupRequired = checkBorrowing(num1, num2);
+  
+    return { num1, num2, regroupRequired };
+  };
+  
+  // Function to generate a multiplication problem
+  const generateMultiplicationProblem = () => {
+    let num1 = getRandomNumber(digitsInOperand1);
+    let num2 = getRandomNumber(digitsInOperand2);
+    let regroupRequired = checkMultiplicationCarryOver(num1, num2);
+  
+    return { num1, num2, regroupRequired };
+  };
+  
+  // Function to generate a division problem
+  const generateDivisionProblem = () => {
+    let num1 = getRandomNumber(digitsInOperand1);
+    let num2 = getRandomNumber(digitsInOperand2);
+  
+    // Ensure no division by zero
+    if (num2 === 0) num2 = 1;
+  
+    // Ensure no fractional results
+    num1 = num1 * num2; // Make sure num1 is divisible by num2
+  
+    let regroupRequired = checkDivisionRemainder(num1, num2);
+  
+    return { num1, num2, regroupRequired };
+  };
+  
+  // Checking for carryover in addition
+  const checkCarryOver = (num1, num2) => {
+    const num1Digits = num1.toString().split('').reverse().map(Number);
+    const num2Digits = num2.toString().split('').reverse().map(Number);
+  
+    for (let i = 0; i < Math.min(num1Digits.length, num2Digits.length); i++) {
+      if (num1Digits[i] + num2Digits[i] >= 10) {
+        return true; // Regrouping required (carryover)
       }
     }
-
-    // All digits are equal, no borrowing required
     return false;
   };
+  
+  // Checking for borrowing in subtraction
+  const checkBorrowing = (num1, num2) => {
+    const num1Digits = num1.toString().split('').reverse().map(Number);
+    const num2Digits = num2.toString().split('').reverse().map(Number);
+  
+    for (let i = 0; i < Math.min(num1Digits.length, num2Digits.length); i++) {
+      if (num1Digits[i] < num2Digits[i]) {
+        return true; // Borrowing required
+      }
+    }
+    return false;
+  };
+  
+  // Checking for carryover in multiplication
+  const checkMultiplicationCarryOver = (num1, num2) => {
+    const num1Digits = num1.toString().split('').reverse().map(Number);
+    const num2Digits = num2.toString().split('').reverse().map(Number);
+  
+    // Check multiplication of each pair of digits for carryover
+    for (let i = 0; i < Math.min(num1Digits.length, num2Digits.length); i++) {
+      if (num1Digits[i] * num2Digits[i] >= 10) {
+        return true; // Regrouping required (carryover)
+      }
+    }
+    return false;
+  };
+  
+  // Checking for a remainder in division (regrouping in division)
+  const checkDivisionRemainder = (num1, num2) => {
+    return num1 % num2 !== 0; // If there's a remainder, regrouping (or fraction) is required
+  };
+  
+  
 
   const getRandomNumber = (digits) => {
     const min = Math.pow(10, digits - 1);
